@@ -4,6 +4,11 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     dancer.x = arrowXs[0]
 })
+// When arrow touches stopper (SpriteKind.Enemy), remove one life
+sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Food, function (sprite, otherSprite) {
+    info.changeLifeBy(-1)
+    otherSprite.destroy(effects.disintegrate, 500)
+})
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     dancer.x = arrowXs[2]
 })
@@ -29,6 +34,10 @@ function setUpStopper () {
     true
     )
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
+    info.changeScoreBy(1)
+    otherSprite.destroy(effects.smiles, 500)
+})
 function makeArrow () {
     arrowNumber = randint(0, 3)
     arrow = sprites.create(arrowImgs[arrowNumber], SpriteKind.Food)
@@ -42,6 +51,8 @@ let stopper: Sprite = null
 let dancer: Sprite = null
 let arrowXs: number[] = []
 let arrowImgs: Image[] = []
+info.setScore(0)
+info.setLife(3)
 scene.setBackgroundImage(img`
     ................................................................................................................................................................
     ................................................................................................................................................................
@@ -256,6 +267,15 @@ dancer = sprites.create(img`
     `, SpriteKind.Player)
 dancer.y = 100
 dancer.x = arrowXs[1]
-game.onUpdateInterval(500, function () {
+game.onUpdateInterval(750, function () {
     makeArrow()
+})
+forever(function () {
+    music.playMelody("C5 A G A F B G A ", 80)
+})
+forever(function () {
+    music.playMelody("A F E F D G E F ", 80)
+})
+forever(function () {
+    music.playMelody("A F E F D G E F ", 240)
 })
